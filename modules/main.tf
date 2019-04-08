@@ -39,7 +39,7 @@ data "aws_availability_zones" "all" {}
 # ---------------------------------------------------------------------------------------------------------------------
 
 resource "aws_security_group" "instance" {
-  name = "terraform-example-instance"
+  name = "${var.instance-security_group_name}" # TF-SecG-instance-Prod
 
   # Inbound HTTP from anywhere
   ingress {
@@ -62,20 +62,19 @@ resource "aws_security_group" "instance" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 resource "aws_launch_configuration" "example" {
+  name = "${var.launch_conf_name}" # TF-LC-Prod
+
   # Ubuntu Server 14.04 LTS (HVM), SSD Volume Type in us-east-1  # image_id = "ami-2d39803a"
 
   # Ubuntu Server 18.04 LTS (HVM), SSD Volume Type - ami-0a313d6098716f372 (64-bit x86)
-  image_id = "ami-0a313d6098716f372"
-
+  image_id        = "ami-0a313d6098716f372"
   instance_type   = "t2.micro"
   security_groups = ["${aws_security_group.instance.id}"]
-
   user_data = <<-EOF
               #!/bin/bash
               echo "Hello, World" > index.html
               nohup busybox httpd -f -p "${var.server_port}" &
               EOF
-
   # Important note: whenever using a launch configuration with an auto scaling group, you must set
   # create_before_destroy = true. However, as soon as you set create_before_destroy = true in one resource, you must
   # also set it in every resource that it depends on, or you'll get an error about cyclic dependencies (especially when
@@ -93,7 +92,7 @@ resource "aws_launch_configuration" "example" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 resource "aws_security_group" "elb" {
-  name = "terraform-example-elb"
+  name = "${var.ELB-security_group_name}" # TF-SecG-elb-Prod
 
   # Allow all outbound
   egress {
@@ -117,7 +116,7 @@ resource "aws_security_group" "elb" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 resource "aws_elb" "example" {
-  name               = "terraform-asg-example"
+  name               = "${var.e_load_balancer_name}"                # TF-ELB-Prod
   security_groups    = ["${aws_security_group.elb.id}"]
   availability_zones = ["${data.aws_availability_zones.all.names}"]
 
@@ -143,6 +142,9 @@ resource "aws_elb" "example" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 resource "aws_autoscaling_group" "example" {
+  name = "${var.auto_scaling_group_name}" # TF-ASG-Prod
+
+  # name = "${var.tag_name}"
   launch_configuration = "${aws_launch_configuration.example.id}"
   availability_zones   = ["${data.aws_availability_zones.all.names}"]
 
@@ -153,10 +155,8 @@ resource "aws_autoscaling_group" "example" {
   health_check_type = "ELB"
 
   tag {
-    key   = "Name"
-    value = "terraform-asg-example"
-
-    # value               = "${var.tag_name}"
+    key                 = "Name"
+    value               = "${var.instance_tag_name}" # Prod-ASG,  This tag appears on each EC2 instance name
     propagate_at_launch = true
   }
 }

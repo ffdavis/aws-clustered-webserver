@@ -20,14 +20,26 @@ variable "server_port" {
   default     = 8080
 }
 
-#variable "tag_name" {
-#  description = "Instance Tag Name"
-#
-#  # default = "terraform-instance"
-#}
+variable "launch_conf_name" {
+  description = "Launch Configuration Name"
+}
 
+variable "auto_scaling_group_name" {
+  description = "Auto Scaling Group Name"
+}
 
-#variable "security_group" {
-#	default = "launch-wizard-1"
-#}
+variable "instance_tag_name" {
+  description = "Instance Tag Name"
+}
 
+variable "e_load_balancer_name" {
+  description = "Elastic Load Balancer Name"
+}
+
+variable "instance-security_group_name" {
+  description = "Instance Security Group Name"
+}
+
+variable "elb-security_group_name" {
+  description = "ELB Security Group Name"
+}

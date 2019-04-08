@@ -11,10 +11,23 @@
 # ---------------------------------------------------------------------------------------------------------------------
 
 variable "region" {
-	description = "the aws region where we want create the resources"
-	default = "us-east-1"
+  description = "the aws region where we want create the resources"
+  default     = "us-east-1"
 }
+
 variable "server_port" {
   description = "The port the server will use for HTTP requests"
-  default = 8080
+  default     = 8080
 }
+
+#variable "tag_name" {
+#  description = "Instance Tag Name"
+#
+#  # default = "terraform-instance"
+#}
+
+
+#variable "security_group" {
+#	default = "launch-wizard-1"
+#}
+

@@ -36,10 +36,10 @@ variable "e_load_balancer_name" {
   description = "Elastic Load Balancer Name"
 }
 
-variable "instance-security_group_name" {
+variable "instance_security_group_name" {
   description = "Instance Security Group Name"
 }
 
-variable "elb-security_group_name" {
+variable "elb_security_group_name" {
   description = "ELB Security Group Name"
 }

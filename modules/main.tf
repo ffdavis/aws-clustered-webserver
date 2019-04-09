@@ -39,7 +39,7 @@ data "aws_availability_zones" "all" {}
 # ---------------------------------------------------------------------------------------------------------------------
 
 resource "aws_security_group" "instance" {
-  name = "${var.instance-security_group_name}" # TF-SecG-instance-Prod
+  name = "${var.instance_security_group_name}" # TF-SecG-instance-Prod
 
   # Inbound HTTP from anywhere
   ingress {
@@ -92,7 +92,7 @@ resource "aws_launch_configuration" "example" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 resource "aws_security_group" "elb" {
-  name = "${var.ELB-security_group_name}" # TF-SecG-elb-Prod
+  name = "${var.elb_security_group_name}" # TF-SecG-elb-Prod
 
   # Allow all outbound
   egress {

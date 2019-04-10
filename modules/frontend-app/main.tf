@@ -15,15 +15,19 @@
 # 1- Configure our AWS CONNECTION
 # ------------------------------------------------------------------------------
 
-# provider "aws" {
-#   region = "us-east-1"
-# }
-
-provider "aws" {
-  shared_credentials_file = "~/.aws/credentials"
-  region                  = "${var.region}"
-  profile                 = "default"
-}
+# The provider "aws" is defined in the root main file and not in the module main, so I will comment these lines. 
+#
+#provider "aws" {
+#  shared_credentials_file = "~/.aws/credentials"
+#  region                  = "us-east-1"
+#  profile                 = "default"
+#}
+#
+#provider "aws" {
+#  shared_credentials_file = "~/.aws/credentials"
+#  region                  = "${var.region}"
+#  profile                 = "default"
+#}
 
 # ---------------------------------------------------------------------------------------------------------------------
 # 2 - GET THE LIST OF AVAILABILITY ZONES IN THE CURRENT REGION
@@ -142,14 +146,12 @@ resource "aws_elb" "example" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 resource "aws_autoscaling_group" "example" {
-  name = "${var.auto_scaling_group_name}" # TF-ASG-Prod
-
-  # name = "${var.tag_name}"
+  name                 = "${var.auto_scaling_group_name}"             # TF-ASG-Prod
   launch_configuration = "${aws_launch_configuration.example.id}"
   availability_zones   = ["${data.aws_availability_zones.all.names}"]
 
-  min_size = 2
-  max_size = 10
+  min_size = "${var.asgroup_min_size}" # min_size = 2
+  max_size = "${var.asgroup_max_size}" # max_size = 10
 
   load_balancers    = ["${aws_elb.example.name}"]
   health_check_type = "ELB"
@@ -159,6 +161,15 @@ resource "aws_autoscaling_group" "example" {
     value               = "${var.instance_tag_name}" # Prod-ASG,  This tag appears on each EC2 instance name
     propagate_at_launch = true
   }
+}
+
+resource "aws_autoscaling_policy" "scale_out" {
+  name                   = "${var.autoscaling_policy_name}"
+  autoscaling_group_name = "${aws_autoscaling_group.example.name}" # asg_name is an output variable defined in the outputs.tf file
+  adjustment_type        = "${var.autoscaling_adjustment_type}"
+  policy_type            = "${var.autoscaling_policy_type}"
+  scaling_adjustment     = "${var.autoscaling_scaling_adjustment}"
+  cooldown               = "${var.autoscaling_cooldown}"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

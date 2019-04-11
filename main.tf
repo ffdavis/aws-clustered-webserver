@@ -16,7 +16,7 @@ module "frontendProd" {
   asgroup_min_size             = 2
   asgroup_max_size             = 10
 
-  autoscaling_policy_name        = "TF-scaleout-frontendapp-Prod"
+  autoscaling_policy_name        = "TF-scaleout-Prod"
   autoscaling_adjustment_type    = "ChangeInCapacity"
   autoscaling_policy_type        = "SimpleScaling"
   autoscaling_scaling_adjustment = 1

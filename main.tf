@@ -11,8 +11,7 @@ locals {
 module "frontendProd" {
   source = "./modules/frontend-app"
 
-  # launch_conf_name             = "TF-LC-Prod"
-  launch_conf_name               = "TF-LC-${local.env}"
+  launch_conf_name               = "TF-LC-${local.env}"     # "TF-LC-Prod"
   auto_scaling_group_name        = "TF-ASG-${local.env}"
   instance_tag_name              = "TF-Inst-${local.env}-ASG"
   e_load_balancer_name           = "TF-ELB-${local.env}"
